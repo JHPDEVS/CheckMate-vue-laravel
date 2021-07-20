@@ -1,3 +1,27 @@
+## Kakao oAuth
+
+We need 
+
+composer require laravel/socialite
+composer require socialiteproviders/kakao
+composer require socialiteproviders/manager
+
+- [SocialController](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/app/Http/Controllers/SocialController.php).
+- [route(web.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/routes/web.php).
+- [Migration (2021_07_19_103132_add_users_col.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/database/migrations/2021_07_19_103132_add_users_col.php).
+
+[config(services.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/config/services.php).
+
+
+.env
+
+# kakao
+KAKAO_KEY=
+KAKAO_SECRET=
+KAKAO_REDIRECT_URI=
+
+----------------------------------------------------------------------------------------------
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
