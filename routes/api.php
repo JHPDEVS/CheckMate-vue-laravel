@@ -18,15 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => ['web']], function () {
-    Route::middleware(['cors'])->group(function () {
-        Route::get('/csrf_token', function(){
-            return csrf_token();
-        });
-        Route::get('/login/kakao',[SocialController::class,'redirect'])->name('kakao');
-    });
-});
 
 
-
-Route::get('/login/kakao/callback',[SocialController::class,'callback'])->name('kakaocall');

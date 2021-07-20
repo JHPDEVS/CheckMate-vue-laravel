@@ -31,15 +31,18 @@
                 <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
                     비밀번호 찾기
                 </inertia-link>
-                <inertia-link :href="route('kakao')"  class="text-gray-600 hover:text-gray-900">
-                    카카오톡 로그인
-                </inertia-link>
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </jet-button>
             </div>
         </form>
+            <div class="auth">
+    <jet-button @click="goToKakao"  class="text-gray-600 hover:text-gray-900">
+                    카카오톡 로그인
+                </jet-button>
+    </div>
     </jet-authentication-card>
+
 </template>
 
 <script>
@@ -87,6 +90,10 @@
                     .post(this.route('login'), {
                         onFinish: () => this.form.reset('password'),
                     })
+            },
+
+            goToKakao() {
+                location.href="/login/kakao"
             }
         }
     }

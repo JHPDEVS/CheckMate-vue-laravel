@@ -29,3 +29,12 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
+Route::group(['middleware' => ['web']], function () {
+    Route::middleware(['cors'])->group(function () {
+        Route::get('/csrf_token', function(){
+            return csrf_token();
+        });
+        Route::get('/login/kakao',[SocialController::class,'redirect'])->name('kakao.login');
+    });
+});
+Route::get('/login/kakao/callback',[SocialController::class,'callback'])->name('kakaocall');
