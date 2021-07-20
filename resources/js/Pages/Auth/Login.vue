@@ -5,7 +5,6 @@
         </template>
 
         <jet-validation-errors class="mb-4" />
-
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
@@ -30,9 +29,11 @@
 
             <div class="flex items-center justify-end mt-4">
                 <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
+                    비밀번호 찾기
                 </inertia-link>
-
+                <inertia-link :href="route('kakao')"  class="text-gray-600 hover:text-gray-900">
+                    카카오톡 로그인
+                </inertia-link>
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </jet-button>
@@ -71,7 +72,7 @@
                 form: this.$inertia.form({
                     email: '',
                     password: '',
-                    remember: false
+                    remember: false,
                 })
             }
         },
