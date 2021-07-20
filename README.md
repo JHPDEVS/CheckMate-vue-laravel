@@ -14,7 +14,7 @@ We need
 - [route(web.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/routes/web.php).
 - [Migration (2021_07_19_103132_add_users_col.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/database/migrations/2021_07_19_103132_add_users_col.php).
 
--[config(services.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/config/services.php).
+- [config(services.php)](https://github.com/https-github-com-InJoon-L/jhp-laravel/blob/master/config/services.php).
 
 ----------------------------------------------------------------------------------------------
 
