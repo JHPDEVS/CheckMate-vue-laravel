@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-
+use Illuminate\Support\Str;
 class SocialController extends Controller
 {
     //
@@ -26,23 +28,11 @@ class SocialController extends Controller
             return redirect('/');
         } 
         else {
-           // dd($userSocial);
 
-            // $user = User::create([
-            //     'realname' => $userSocial->getName(),
-            //     'name' => $userSocial->name,
-            //     'password' => '1234',
-            //     'email' => $userSocial->getEmail(),
-            //     'userid' => $userSocial->getid(),
-            //     'provider_id' => $userSocial->getId(),
-            //     'provider' => 'kakao',
-
-                
-            // ]);
 
             $user = new User;
             $user->name = $userSocial->name;
-            $user->password = '1234';
+            $user->password = Hash::make(Str::random(8));
             $user->email = $userSocial->getEmail();
             $user->provider = 'kakao';
             $user->current_team_id = '1';
@@ -54,4 +44,38 @@ class SocialController extends Controller
             return redirect('/');
         }
     }
+
+        // 로그인 후 추가정보 입력
+        public function inputData(Request $req) {
+            $validator = Validator($req->all(), [
+                'phone_number' => 'required|string',
+                'sid' => 'required|integer',
+                'position' => 'required|string'
+            ]);
+    
+            $res = null;
+    
+            if ($validator->fails()) {
+                $res = response()->json([
+                    'status' => 'error',
+                    'messages' => $validator->getMessageBag()
+                ], 200);
+    
+                return redirect('/')->with($res);
+            }
+    
+            $user = User::find(Auth::user()->id);
+            $user->phone_number = $req->phone_number;
+            $user->sid = $req->sid;
+            $user->position = $req->position;
+    
+            $user->save();
+    
+            $res = response()->json([
+                'status' => 'success',
+                'data' => $user
+            ], 200);
+    
+            return redirect()->route('', ['res' => $res]);
+        }
 }
