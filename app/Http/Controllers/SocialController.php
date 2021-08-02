@@ -41,7 +41,7 @@ class SocialController extends Controller
             $users = User::where(['email'=>$userSocial->getEmail(),'provider'=>'kakao'])->first();
 
             Auth::login($users);
-            return redirect('/');
+            return redirect('/setInfo');
         }
     }
 
@@ -50,7 +50,9 @@ class SocialController extends Controller
             $validator = Validator($req->all(), [
                 'phone_number' => 'required|string',
                 'sid' => 'required|integer',
-                'position' => 'required|string'
+                'position' => 'required|string',
+                'class' => 'required',
+                'email' => 'required|string',
             ]);
     
             $res = null;
@@ -66,6 +68,7 @@ class SocialController extends Controller
     
             $user = User::find(Auth::user()->id);
             $user->phone_number = $req->phone_number;
+            $user->class = $req->class;
             $user->sid = $req->sid;
             $user->position = $req->position;
     
@@ -76,6 +79,6 @@ class SocialController extends Controller
                 'data' => $user
             ], 200);
     
-            return redirect()->route('', ['res' => $res]);
+            return redirect()->route('dashboard', ['res' => $res]);
         }
 }
