@@ -19,11 +19,13 @@ class SocialController extends Controller
 
     public function callback() {
         $userSocial = Socialite::driver('kakao')->user();
-
+        $userProfile = $userSocial->user['kakao_account']['profile']['profile_image_url'];
         $users = User::where(['email'=>$userSocial->getEmail(),'provider'=>'kakao'])->first();
 
         if($users)
         {
+            $users->profile_photo_path = $userProfile;
+            $users->save();
             Auth::login($users);
             return redirect('/');
         } 
@@ -36,6 +38,7 @@ class SocialController extends Controller
             $user->email = $userSocial->getEmail();
             $user->provider = 'kakao';
             $user->current_team_id = '1';
+            $user->profile_photo_path = $userProfile;
             $user->save();
 
             $users = User::where(['email'=>$userSocial->getEmail(),'provider'=>'kakao'])->first();
@@ -52,22 +55,18 @@ class SocialController extends Controller
                 'sid' => 'required|integer',
                 'position' => 'required|string',
                 'class' => 'required',
-                'email' => 'required|string',
             ]);
     
             $res = null;
     
-            if ($validator->fails()) {
-                $res = response()->json([
-                    'status' => 'error',
-                    'messages' => $validator->getMessageBag()
-                ], 200);
-    
-                return redirect('/')->with($res);
-            }
     
             $user = User::find(Auth::user()->id);
             $user->phone_number = $req->phone_number;
+            if($req->class == 'WDJ') {
+                $user->current_team_id = 2;
+            } else if($req->class == 'CPJ'){
+                $user->current_team_id = 3;
+            }
             $user->class = $req->class;
             $user->sid = $req->sid;
             $user->position = $req->position;
@@ -81,4 +80,6 @@ class SocialController extends Controller
     
             return redirect()->route('dashboard', ['res' => $res]);
         }
+
+    
 }
