@@ -18,7 +18,10 @@
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    홈
+                                </jet-nav-link>
+                                 <jet-nav-link :href="route('attend')" :active="route().current('attemd')">
+                                    출석
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -44,35 +47,21 @@
                                             <!-- Team Management -->
                                             <template v-if="$page.props.jetstream.hasTeamFeatures">
                                                 <div class="block px-4 py-2 text-xs text-gray-400">
-                                                    Manage Team
+                                                    반
                                                 </div>
 
                                                 <!-- Team Settings -->
                                                 <jet-dropdown-link :href="route('teams.show', $page.props.user.current_team)">
-                                                    Team Settings
+                                                    팀정보
                                                 </jet-dropdown-link>
 
-                                                <jet-dropdown-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams">
-                                                    Create New Team
-                                                </jet-dropdown-link>
+                               
 
                                                 <div class="border-t border-gray-100"></div>
 
-                                                <!-- Team Switcher -->
-                                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                                    Switch Teams
-                                                </div>
+                
 
-                                                <template v-for="team in $page.props.user.all_teams" :key="team.id">
-                                                    <form @submit.prevent="switchToTeam(team)">
-                                                        <jet-dropdown-link as="button">
-                                                            <div class="flex items-center">
-                                                                <svg v-if="team.id == $page.props.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                                <div>{{ team.name }}</div>
-                                                            </div>
-                                                        </jet-dropdown-link>
-                                                    </form>
-                                                </template>
+        
                                             </template>
                                         </div>
                                     </template>
@@ -84,7 +73,7 @@
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
+                                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_path" :alt="$page.props.user.name" />
                                         </button>
 
                                         <span v-else class="inline-flex rounded-md">
@@ -137,11 +126,16 @@
                     </div>
                 </div>
 
+
+                    <!-- 모바일 -->
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                            홈
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('attend')" :active="route().current('attend')">
+                            출석
                         </jet-responsive-nav-link>
                     </div>
 
@@ -149,7 +143,7 @@
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex-shrink-0 mr-3" >
-                                <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
+                                <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.user.profile_photo_path" :alt="$page.props.user.name" />
                             </div>
 
                             <div>
@@ -160,7 +154,7 @@
 
                         <div class="mt-3 space-y-1">
                             <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
-                                Profile
+                                프로필 설정
                             </jet-responsive-nav-link>
 
                             <jet-responsive-nav-link :href="route('api-tokens.index')" :active="route().current('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
@@ -170,7 +164,7 @@
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
                                 <jet-responsive-nav-link as="button">
-                                    Log Out
+                                    로그아웃
                                 </jet-responsive-nav-link>
                             </form>
 
@@ -178,36 +172,14 @@
                             <template v-if="$page.props.jetstream.hasTeamFeatures">
                                 <div class="border-t border-gray-200"></div>
 
-                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                    Manage Team
-                                </div>
-
-                                <!-- Team Settings -->
-                                <jet-responsive-nav-link :href="route('teams.show', $page.props.user.current_team)" :active="route().current('teams.show')">
-                                    Team Settings
-                                </jet-responsive-nav-link>
-
-                                <jet-responsive-nav-link :href="route('teams.create')" :active="route().current('teams.create')" v-if="$page.props.jetstream.canCreateTeams">
-                                    Create New Team
-                                </jet-responsive-nav-link>
-
-                                <div class="border-t border-gray-200"></div>
-
-                                <!-- Team Switcher -->
-                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                    Switch Teams
-                                </div>
-
-                                <template v-for="team in $page.props.user.all_teams" :key="team.id">
-                                    <form @submit.prevent="switchToTeam(team)">
-                                        <jet-responsive-nav-link as="button">
-                                            <div class="flex items-center">
-                                                <svg v-if="team.id == $page.props.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                <div>{{ team.name }}</div>
-                                            </div>
-                                        </jet-responsive-nav-link>
-                                    </form>
-                                </template>
+                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                            소속 그룹
+                                        </div>
+        <div class="flex items-center">
+                                                        <svg class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                        <div>{{ $page.props.user.current_team.name }}</div>
+                                                    </div>
+    
                             </template>
                         </div>
                     </div>
