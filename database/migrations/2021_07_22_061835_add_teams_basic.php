@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,14 +16,33 @@ class AddTeamsBasic extends Migration
     public function up()
     {
         //
-        DB::table('teams')->insert([
-            array(
-                'id' => 1,
-                'user_id' => 1,
-                'name' => '미인증 사용자',
-                'personal_team' =>0 ,
-            )
-        ]);
+        $team = new Team();
+        $team->id = 1;
+        $team->user_id = 1;
+        $team->name = '미인증 사용자';
+        $team->personal_team = 0;
+        $team->save();
+
+        $team2 = new Team();
+        $team2->id = 2;
+        $team2->user_id = 1;
+        $team2->name = 'WDJ';
+        $team2->personal_team = 0;
+        $team2->save();
+     
+        $team3 = new Team();
+        $team3->id = 3;
+        $team3->user_id = 1;
+        $team3->name = 'CPJ';
+        $team3->personal_team = 0;
+        $team3->save();
+
+        $team4 = new Team();
+        $team4->id = 4;
+        $team4->user_id = 1;
+        $team4->name = '교수';
+        $team4->personal_team = 0;
+        $team4->save();
     }
 
     /**
@@ -33,5 +53,9 @@ class AddTeamsBasic extends Migration
     public function down()
     {
         //
+        // Schema::table('teams', function (Blueprint $table) {
+        //     $team = Team::all();
+        //     $team->delete();
+        // });
     }
 }
