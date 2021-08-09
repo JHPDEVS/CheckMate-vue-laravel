@@ -64,7 +64,7 @@
                 // 모바일이면 실행될 코드 들어가는 곳
                 // https://cors-anywhere.herokuapp.com/https://computer.yju.ac.kr/board_NZIo01
                 // http://api.ckmate.shop/https://computer.yju.ac.kr/board_NZIo01
-                axios.get("https://cors-anywhere.herokuapp.com/https://computer.yju.ac.kr/board_NZIo01")
+                axios.get("https://api.ckmate.shop/https://computer.yju.ac.kr/board_NZIo01")
                     .then(response => {
                         const $ = cheerio.load(response.data);
                         const span = $('ol').children('li');
@@ -89,7 +89,7 @@
                     })
             } else {
                 // 모바일이 아니면 실행될 코드 들어가는 곳
-                axios.get("https://cors-anywhere.herokuapp.com/https://computer.yju.ac.kr/board_NZIo01")
+                axios.get("https://api.ckmate.shop/https://computer.yju.ac.kr/board_NZIo01")
                     .then(response => {
                         const $ = cheerio.load(response.data);
                         const span = $('tbody').children('tr');
