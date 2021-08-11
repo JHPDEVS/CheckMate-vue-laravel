@@ -14,11 +14,11 @@ class SocialController extends Controller
     //
   
     public function redirect() {
-        return Socialite::driver('kakao')->stateless()->redirect();
+        return Socialite::driver('kakao')->redirect();
     }
 
     public function callback() {
-        $userSocial = Socialite::driver('kakao')->stateless()->user();
+        $userSocial = Socialite::driver('kakao')->user();
         $userProfile = $userSocial->user['kakao_account']['profile']['profile_image_url'];
         $users = User::where(['email'=>$userSocial->getEmail(),'provider'=>'kakao'])->first();
 
