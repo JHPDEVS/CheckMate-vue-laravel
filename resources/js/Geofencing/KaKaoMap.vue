@@ -6,36 +6,46 @@
                     d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
             </svg></div>
         <div>
-            <p class="font-bold py-1">PC에서 출석시 위치가 정확하지 않을 수 있습니다!</p>
+            <p class="font-bold py-1">PC에서 접속시 현재위치가 정확하지 않을 수 있습니다!</p>
         </div>
     </div>
-
-    <div v-if="counts>0">
-        <attend-form />
+    <div v-if="isLoading==0">
+        <loading-bar></loading-bar>
     </div>
     <div v-else>
-        <div role="alert">
-            <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
-                에러
+        <div v-if="counts==1">
+            <attend-form />
+        </div>
+        <div v-else-if="counts==0">
+            <div role="alert">
+                <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+                    에러
+                </div>
+                <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                    <p>출석체크를 할려면 {{ boundary }}M 이내에 접근하세요</p>
+                </div>
             </div>
-            <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                <p>출석체크를 할려면 100m 이내에 접근하세요</p>
+            <div class="py-3">
+                <not-visible-attend></not-visible-attend>
             </div>
+
         </div>
     </div>
-
-    <div id="map" style="width:100%;height:500px"></div>
+    <div id="map" style="width:100%;height:300px" class="bg-white shadow-lg p-4 rounded-lg flex flex-wrap justify-between w-full mb-3"></div>
 
 </template>
 <script>
     import AttendForm from '@/Geofencing/AttendForm'
-    import axios from 'axios'
+    import NotVisibleAttend from '@/Geofencing/notVisibleAttend.vue'
+    import LoadingBar from "@/Pages/Board/LoadingBar"
     export default {
         data() {
             return {
-                counts: '1',
+                counts: '0',
                 distance: '9999',
-                isPC: '0'
+                isPC: '0',
+                boundary: 300, // 출석허용거리
+                isLoading: 0,
             }
         },
         computed: {},
@@ -73,8 +83,8 @@
                             check = '<div style="padding:5px;">영진전문대 본관</div>'; // 인포윈도우에 표시될 내용입니다
 
                         var locPosition = new kakao.maps.LatLng(lat,
-                                lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-                          // 인포윈도우에 표시될 내용입니다
+                            lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                        // 인포윈도우에 표시될 내용입니다
 
                         // 마커와 인포윈도우를 표시합니다
                         // 마커를 생성합니다
@@ -146,7 +156,7 @@
 
                         var circle = new kakao.maps.Circle({
                             center: new kakao.maps.LatLng(startlat, startlon), // 원의 중심좌표 입니다 
-                            radius: 50, // 미터 단위의 원의 반지름입니다 
+                            radius: this.boundary, // 미터 단위의 원의 반지름입니다 
                             strokeWeight: 5, // 선의 두께입니다 
                             strokeColor: '#75B8FA', // 선의 색깔입니다
                             strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -164,19 +174,21 @@
                         circle.setMap(map);
 
                         var distance = Math.ceil(polyline.getLength());
-                        var content2 = '<span class="info-title">'+'<a>'+"학교까지  "+ distance +"M  "+'</a>'+'</span>'
+                        var content2 = '<span class="info-title">' + '<a>' + "학교까지  " + distance + "M  " +
+                            '</a>' + '</span>'
                         var customOverlay2 = new kakao.maps.CustomOverlay({
                             map: map,
                             position: locPosition,
                             content: content2,
                             yAnchor: 1
                         });
-                        if (polyline.getLength() <= 100) {
+                        if (polyline.getLength() <= this.boundary) {
                             console.log("출석체크 버튼 생성");
                             this.addAttendButton();
                         } else {
-                            
+
                         }
+                        this.isLoading = 1;
                     });
 
                 } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
@@ -192,7 +204,7 @@
                 const script = document.createElement('script'); /* global kakao */
                 script.onload = () => kakao.maps.load(this.initMap);
                 script.src =
-                    'http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=dc92402fe9472a39910383183e108f9c';
+                    '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=dc92402fe9472a39910383183e108f9c';
                 document.head.appendChild(script);
             },
             addAttendButton: function () {
@@ -203,7 +215,9 @@
             },
         },
         components: {
-            AttendForm
+            AttendForm,
+            NotVisibleAttend,
+            LoadingBar,
         }
     }
 </script>
@@ -255,6 +269,7 @@
         height: 12px;
         background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')
     }
+
     .info-title {
         position: relative;
         top: 50px;
@@ -264,15 +279,16 @@
         border-bottom: 4px solid #fff;
         float: right;
     }
+
     .info-title>a {
-    display: block;
-    background: #F87171;
-    opacity: 0.8;
-    color: #fff;
-    text-align: center;
-    height: 40px;
-    width: 160px;
-    line-height:40px;
-    
-}
+        display: block;
+        background: #F87171;
+        opacity: 0.8;
+        color: #fff;
+        text-align: center;
+        height: 40px;
+        width: 160px;
+        line-height: 40px;
+
+    }
 </style>
