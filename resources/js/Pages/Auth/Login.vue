@@ -2,50 +2,27 @@
     <jet-authentication-card>
         <template #logo>
             <jet-authentication-card-logo />
+            
         </template>
 
-        <jet-validation-errors class="mb-4" />
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
-            </div>
-
-            <div class="mt-4">
-                <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <jet-checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    비밀번호 찾기
-                </inertia-link>
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </jet-button>
-            </div>
-        </form>
             <div class="auth">
-    <jet-button @click="goToKakao"  class="text-gray-600 hover:text-gray-900">
-                    카카오톡 로그인
-                </jet-button>
+                  <div class="rounded-t mb-0 px-6 py-6">
+                        <div class="text-center mb-3">
+                            <h6 class="text-gray-600 text-sm font-bold">체크메이트 로그인</h6></div>
+                            <hr class="mt-2 border-b-1 border-gray-400">
+                        <div class="flex items-center mt-6">
+                            <img alt="..." @click="goToKakao" class="w-full hover:opacity-50" src="/img/kakao_login_medium_wide.png">
+                        </div>
+                    </div>
+                
     </div>
+    
     </jet-authentication-card>
 
 </template>
 
 <script>
+
     import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
     import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
     import JetButton from '@/Jetstream/Button'
