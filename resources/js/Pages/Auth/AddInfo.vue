@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
-                    <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+                    <div class="alert alert-warning"
                         role="alert">
                         <div class="flex ">
                             <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4"
@@ -23,8 +23,10 @@
                                 <p class="text-sm">빈칸 없이 입력해주세요!</p>
                             </div>
                         </div>
+                        </div>
+                        <div class="px-3 mx-auto">
                         <AddAuthForm />
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
