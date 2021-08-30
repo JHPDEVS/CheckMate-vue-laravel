@@ -65,7 +65,6 @@ class SocialController extends Controller
                 ], 200, [], JSON_UNESCAPED_UNICODE);
             }
             
-            $res = null;
 
 
             $user = User::find(Auth::user()->id);
