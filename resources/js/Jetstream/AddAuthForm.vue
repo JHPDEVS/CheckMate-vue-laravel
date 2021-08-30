@@ -74,7 +74,7 @@
                         이름: this.name,
                         전화번호: this.phone_number,
                         학번: this.sid,
-                        반: this.class,
+                        반: this.classValue,
                         위치: this.position
                     })
                     .then(response => {
