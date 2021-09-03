@@ -52,6 +52,8 @@ class SocialController extends Controller
 
         // 로그인 후 추가정보 입력
         public function inputData(Request $req) {
+
+            
             $validator = Validator($req->all(), [
                 '학번' => 'required|integer|digits:7',
                 '이름' => 'required',
@@ -64,7 +66,6 @@ class SocialController extends Controller
                     'data' => $validator->errors()
                 ], 200, [], JSON_UNESCAPED_UNICODE);
             }
-            
 
 
             $user = User::find(Auth::user()->id);
@@ -78,8 +79,15 @@ class SocialController extends Controller
             $user->sid = $req->학번;
             $user->position = $req->위치;
             $user->name = $req->이름;
-
-            $user->save();
+            $ifUser = User::where('sid', $req->학번)->first();
+            if($ifUser) {
+                return response()->json([
+                    'status' => '학번',
+                    'data' => '이미 가입된 학번입니다'
+                ], 200, [], JSON_UNESCAPED_UNICODE);
+            } else {
+                $user->save();
+            }
 
             return response()->json([
                 'status' => 'success',
