@@ -117,6 +117,8 @@ return [
     'attributes' => [
         'title' => '제목',
         'content' => '본문',
+        'run' => '바퀴 수',
+        'imageFile' => '이미지',
         'tags' => '태그',
         'files' => '파일',
         'files.*' => '파일',

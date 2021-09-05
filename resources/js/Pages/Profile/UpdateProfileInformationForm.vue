@@ -1,154 +1,134 @@
 <template>
-    <jet-form-section @submitted="updateProfileInformation">
+    <jet-action-section>
         <template #title>
-            Profile Information
+            프로필 정보
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            이름을 수정 할 수 있습니다.
         </template>
 
-        <template #form>
-            <!-- Profile Photo -->
-            <div class="col-span-6 sm:col-span-4" v-if="$page.props.jetstream.managesProfilePhotos">
-                <!-- Profile Photo File Input -->
-                <input type="file" class="hidden"
-                            ref="photo"
-                            @change="updatePhotoPreview">
+        <template #content>
+            <form action="/setInfo/save" method="post" v-on:submit.prevent>
 
-                <jet-label for="photo" value="Photo" />
-
-                <!-- Current Profile Photo -->
-                <div class="mt-2" v-show="! photoPreview">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
+                <div class="flex flex-col mb-4">
+                    <label class="mb-2 font-bold text-lg text-gray-900" for="name">이름</label>
+                    <div class="form-control">
+                        <input type="text" placeholder="홍길동" class="input input-success  input-bordered" v-model="name">
+                        <span v-if="message.이름"
+                            class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{ message.이름 }}</span>
+                    </div>
                 </div>
-
-                <!-- New Profile Photo Preview -->
-                <div class="mt-2" v-show="photoPreview">
-                    <span class="block rounded-full w-20 h-20"
-                          :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'">
-                    </span>
+                <div class="flex flex-col mb-4">
+                    <label class="mb-2 font-bold text-lg text-gray-900" for="phone_number">전화번호</label>
+                    <div class="form-control">
+                        <input type="number" placeholder="username" class="input input-success  input-bordered"
+                            v-model="phone_number">
+                        <span v-if="message.전화번호"
+                            class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{ message.전화번호 }}</span>
+                    </div>
                 </div>
+                <div class="flex flex-col mb-4">
+                    <label class="mb-2 font-bold text-lg text-gray-900" for="last_name">반</label>
+                    <select v-model='classValue' class="select select-bordered select-success  w-full max-w-xs">
+                        <option selected="selected">WDJ</option>
+                    </select>
+                </div>
+                <div class="flex flex-col mb-4">
+                    <label class="mb-2 font-bold text-lg text-gray-900" for="sid">학번</label>
+                    <div class="form-control">
+                        <input type="text" disabled placeholder="1801234" class="input input-success  input-bordered"
+                            v-model="sid">
+                        <span
+                            class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">학번은 변경이 불가능합니다. 관리자에게 문의해주세요</span>
+                    </div>
+                </div>
+                <div class="flex flex-col mb-4">
+                    <label class="mb-2 font-bold text-lg text-gray-900" for="password">직업</label>
 
-                <jet-secondary-button class="mt-2 mr-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
-                </jet-secondary-button>
+                    <select class="select select-bordered w-full max-w-xs" v-model="position">
+                        <option selected="selected">학생</option>
+                        <option selected="selected">교수</option>
+                    </select>
+                    <span v-if="position == '교수'"
+                        class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">회원관리 기능은 운영자
+                        확인 후
+                        부여됩니다</span>
 
-                <jet-secondary-button type="button" class="mt-2" @click.prevent="deletePhoto" v-if="user.profile_photo_path">
-                    Remove Photo
-                </jet-secondary-button>
-
-                <jet-input-error :message="form.errors.photo" class="mt-2" />
-            </div>
-
-            <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <jet-label for="name" value="Name" />
-                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
-            </div>
-
-            <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
-                <jet-input-error :message="form.errors.email" class="mt-2" />
-            </div>
+                </div>
+                <button @click="save"
+                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">제출</button>
+                <input type="hidden" name="_token" :value="csrf">
+            </form>
         </template>
-
-        <template #actions>
-            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                Saved.
-            </jet-action-message>
-
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
-            </jet-button>
-        </template>
-    </jet-form-section>
+    </jet-action-section>
 </template>
 
 <script>
-    import JetButton from '@/Jetstream/Button'
-    import JetFormSection from '@/Jetstream/FormSection'
+    import JetActionSection from '@/Jetstream/ActionSection'
     import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetLabel from '@/Jetstream/Label'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-
+    import axios from 'axios'
+    import Dialog from '@/Jetstream/DialogModal'
     export default {
-        components: {
-            JetActionMessage,
-            JetButton,
-            JetFormSection,
-            JetInput,
-            JetInputError,
-            JetLabel,
-            JetSecondaryButton,
-        },
-
-        props: ['user'],
-
-        data() {
+        data: function () {
             return {
-                form: this.$inertia.form({
-                    _method: 'PUT',
-                    name: this.user.name,
-                    email: this.user.email,
-                    photo: null,
-                }),
-
-                photoPreview: null,
+                user_name: document.head.querySelector('meta[name="user-name"]').content,
+                user_sid: document.head.querySelector('meta[name="user-sid"]').content,
+                user_class: document.head.querySelector('meta[name="user-class"]').content,
+                user_photo: document.head.querySelector('meta[name="user-photo"]').content,
+                user_phone: document.head.querySelector('meta[name="user-phone"]').content,
+                user_position: document.head.querySelector('meta[name="user-position"]').content,
+                user_id: document.head.querySelector('meta[name="user-id"]').content,
+                csrf: document.head.querySelector('meta[name="csrf-token"]').content,
+                message: '',
+                header: '',
+                name: '',
+                phone_number: '010',
+                sid: '',
+                classValue: 'WDJ',
+                position: '학생',
+                dialogShow: false,
             }
+        },
+        components: {
+            JetActionSection,
+            JetInput,
+            Dialog
+        },
+        mounted() {
+            this.name = this.user_name
+            this.phone_number = this.user_phone
+            this.classValue = this.user_class
+            this.sid = this.user_sid
+            this.position = this.user_position
         },
 
         methods: {
-            updateProfileInformation() {
-                if (this.$refs.photo) {
-                    this.form.photo = this.$refs.photo.files[0]
-                }
+            save() {
+                axios.post('/profile/save', {
+                        이름: this.name,
+                        전화번호: this.phone_number,
+                        학번: this.sid,
+                        반: this.classValue,
+                        위치: this.position
+                    })
+                    .then(response => {
+                        this.str = ''
+                        this.message = response.data.data
+                        if (response.data.status == 'success') {
+                            location.href = "/"
+                        }
+                        console.log(response.data)
+                        if (response.data.status == "학번") {
+                            this.header = response.data.data
+                            this.dialogShow = true
+                        }
+                    })
 
-                this.form.post(route('user-profile-information.update'), {
-                    errorBag: 'updateProfileInformation',
-                    preserveScroll: true,
-                    onSuccess: () => (this.clearPhotoFileInput()),
-                });
             },
-
-            selectNewPhoto() {
-                this.$refs.photo.click();
-            },
-
-            updatePhotoPreview() {
-                const photo = this.$refs.photo.files[0];
-
-                if (! photo) return;
-
-                const reader = new FileReader();
-
-                reader.onload = (e) => {
-                    this.photoPreview = e.target.result;
-                };
-
-                reader.readAsDataURL(photo);
-            },
-
-            deletePhoto() {
-                this.$inertia.delete(route('current-user-photo.destroy'), {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.photoPreview = null;
-                        this.clearPhotoFileInput();
-                    },
-                });
-            },
-
-            clearPhotoFileInput() {
-                if (this.$refs.photo?.value) {
-                    this.$refs.photo.value = null;
-                }
-            },
-        },
+            close() {
+                this.dialogShow = false
+            }
+        }
     }
 </script>

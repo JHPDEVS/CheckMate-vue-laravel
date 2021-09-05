@@ -96,5 +96,33 @@ class SocialController extends Controller
 
         }
 
+          // 프로필 수정
+          public function profileEdit(Request $req) {
+            
+            $validator = Validator($req->all(), [
+                '이름' => 'required',
+                '전화번호' => 'required|digits:11',
+            ]);
 
+            if($validator->fails()){
+                return response()->json([
+                    'status' => 'false',
+                    'data' => $validator->errors()
+                ], 200, [], JSON_UNESCAPED_UNICODE);
+            }
+
+
+            $user = User::find(Auth::user()->id);
+            $user->phone_number = $req->전화번호;
+            $user->class = $req->반;
+            $user->position = $req->위치;
+            $user->name = $req->이름;
+            $user->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $user
+            ], 200);
+
+        }
 }

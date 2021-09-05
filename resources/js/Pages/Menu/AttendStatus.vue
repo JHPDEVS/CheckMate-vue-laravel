@@ -1,9 +1,10 @@
 <template>
     <app-layout>
+        <attend-marquee/>
         <template #header>
             <div class="tabs">
-                <a class="tab  tab-lifted tab-lg tab-active" :href="route('attendstatus')">My 출석</a>
-                <a class="tab  tab-lifted tab-lg" :href="route('classAttendStatus')">전체 출석</a>
+                <a class="tab  tab-lifted tab-lg tab-active font-bold" :href="route('attendstatus')">My 출석</a>
+                <a class="tab  tab-lifted tab-lg font-bold" :href="route('classAttendStatus')">전체 출석</a>
             </div>
         </template>
 
@@ -15,18 +16,18 @@
                     <attend-chart />
                 </div>
                 <div class="tabs">
-                    <button class="tab  tab-lifted tab-lg tab-active" v-if="category=='전체'"
+                    <button class="tab  tab-lifted tab-lg tab-active font-bold" v-if="category=='전체'"
                         @click="refresh('전체')">전체</button>
-                    <button class="tab  tab-lifted tab-lg" v-else @click="refresh('전체')">전체</button>
-                    <button class="tab  tab-lifted tab-lg tab-active" v-if="category=='출석'"
+                    <button class="tab  tab-lifted tab-lg font-bold" v-else @click="refresh('전체')">전체</button>
+                    <button class="tab  tab-lifted tab-lg tab-active font-bold" v-if="category=='출석'"
                         @click="refresh('출석')">출석</button>
-                    <button class="tab  tab-lifted tab-lg" v-else @click="refresh('출석')">출석</button>
-                    <button class="tab  tab-lifted tab-lg tab-active" v-if="category=='지각'"
+                    <button class="tab  tab-lifted tab-lg font-bold" v-else @click="refresh('출석')">출석</button>
+                    <button class="tab  tab-lifted tab-lg tab-active font-bold" v-if="category=='지각'"
                         @click="refresh('지각')">지각</button>
-                    <button class="tab  tab-lifted tab-lg" v-else @click="refresh('지각')">지각</button>
-                    <button class="tab  tab-lifted tab-lg tab-active" v-if="category=='결석'"
+                    <button class="tab  tab-lifted tab-lg font-bold" v-else @click="refresh('지각')">지각</button>
+                    <button class="tab  tab-lifted tab-lg tab-active font-bold" v-if="category=='결석'"
                         @click="refresh('결석')">결석</button>
-                    <button class="tab  tab-lifted tab-lg" v-else @click="refresh('결석')">결석</button>
+                    <button class="tab  tab-lifted tab-lg font-bold" v-else @click="refresh('결석')">결석</button>
                 </div>
                 <!-- This example requires Tailwind CSS v2.0+ -->
                 <div class="bg-white px-4 py-3   items-center justify-between border-t border-gray-200 sm:px-6 lg:flex">

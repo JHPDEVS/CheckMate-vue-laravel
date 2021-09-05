@@ -1,12 +1,18 @@
 <template>
-    <div v-if="isPC<1" class="flex ">
-        <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20">
-                <path
-                    d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-            </svg></div>
-        <div>
-            <p class="font-bold py-1">PC에서 접속시 현재위치가 정확하지 않을 수 있습니다!</p>
+    <div v-if="isPC<1" class="alert bg-primary">
+        <div class="flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#EF4444"
+                class="flex-shrink-0 w-6 h-6 mx-2">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                </path>
+            </svg>
+            <label>
+                <h4 class="font-semibold text-primary-content">PC에서 접속했습니다!</h4>
+                <p class="text-sm text-primary-content font-semibold">
+            GPS 센서를 찾을 수 없어 위치정보 오차가 커집니다!
+          </p>
+            </label>
         </div>
     </div>
     <div v-if="isLoading==0">
@@ -17,12 +23,15 @@
             <attend-form />
         </div>
         <div v-else-if="counts==0">
-            <div role="alert">
-                <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
-                    에러
-                </div>
-                <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                    <p>출석체크를 할려면 {{ boundary }}M 이내에 접근하세요</p>
+            <div class="alert alert-error mt-4">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="w-6 h-6 mx-2 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                        </path>
+                    </svg>
+                    <label class="font-semibold">출석체크를 할려면 {{ boundary }}M 안에 접근하세요!</label>
                 </div>
             </div>
             <div class="py-3">
@@ -31,7 +40,8 @@
 
         </div>
     </div>
-    <div id="map" style="width:100%;height:300px" class="bg-white shadow-lg p-4 rounded-lg flex flex-wrap justify-between w-full mb-3"></div>
+    <div id="map" style="width:100%;height:300px"
+        class="bg-primary shadow-lg p-4 rounded-lg flex flex-wrap justify-between w-full mb-3"></div>
 
 </template>
 <script>
@@ -44,7 +54,7 @@
                 counts: '0',
                 distance: '9999',
                 isPC: '0',
-                boundary: 300, // 출석허용거리
+                boundary: 80, // 출석허용거리
                 isLoading: 0,
             }
         },

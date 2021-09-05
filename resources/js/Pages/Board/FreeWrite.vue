@@ -78,7 +78,9 @@
                 bodyFormData.append('user_id', this.user_id);
                 bodyFormData.append('content', this.content);
                 bodyFormData.append('title', this.title);
+                if(this.imageFile){
                 bodyFormData.append('imageFile', this.imageFile);
+                }
                 console.log(bodyFormData)
                 for(let key of bodyFormData.entries()){
                     console.log(`${key}`)

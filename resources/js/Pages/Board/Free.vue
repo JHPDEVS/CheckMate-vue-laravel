@@ -1,13 +1,8 @@
 <template>
     <app-layout>
-        <template #header>
-            <div class="tabs">
-                <a class="tab  tab-lifted tab-lg" :href="route('notice')">공지사항</a>
-                <a class="tab  tab-lifted tab-lg tab-active" :href="route('free')">자유게시판</a>
-            </div>
-        </template>
-        <div class="md:px-32 py-4 w-full">
-            <div class="">
+        <div class="md:px-32 w-full">
+            <div>
+                <my-post-info />
                 <div
                     class="relative flex items-center self-center min-w-full max-w-xl p-4 overflow-hidden text-gray-600 focus-within:text-gray-400">
                     <span class="absolute inset-y-0 right-0 flex items-center pr-6">
@@ -18,20 +13,35 @@
                     </span>
                     <input type="search" @keyup.enter="search" v-model="searchQuery"
                         class="w-full py-2 pl-4 pr-10 text-sm bg-gray-100 border border-transparent appearance-none rounded-tg placeholder-gray-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:text-gray-900 focus:shadow-outline-blue"
-                        style="border-radius: 25px, white-space: pre" placeholder="제목으로 검색" autocomplete="off">
+                        style="border-radius: 25px, white-space: pre" placeholder="제목 이름으로 검색" autocomplete="off">
+
+
+                </div>
+
+
+            </div>
+            <div class="bg-white px-4 py-3   items-center justify-between border-t border-gray-200 sm:px-6 lg:flex">
+                <div class="flex-1 flex items-center justify-between ">
+                    <div>
+                        <nav class="relative z-0 inline-flex flex-nowrap rounded-md shadow-sm -space-x-px"
+                            aria-label="Pagination">
+                            <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
+                            <a v-for="(item,i) in pageLinks" v-bind:key="i">
+                                <button @click="refreshPage(item.label)" v-if="item.active==true"
+                                    class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">{{ item.label }}</button>
+                                <button @click="refreshPage(item.label)" v-else
+                                    class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-mediums">{{ item.label }}</button>
+                            </a>
+
+                        </nav>
+
+                    </div>
+
+                </div>
+                <div>
                 </div>
             </div>
-
             <div class="lg:flex ">
-                <div v-if="!(total == 0)" class="btn-group">
-                    <a class="btn btn-secondary btn-outline text-lg fas fa-pen"
-                        v-bind:href="`/freewrite?page=${page.current_page}`"></a>
-                    <span v-for="(item) in pageLinks" v-bind:key="item" class="mx-auto">
-                        <a v-if="item.active ==true && typeof(+item.label == 'number')"
-                            v-bind:href="`/freeshow/?page=${item.label}`" class="btn btn-success">{{ item.label }}</a>
-                        <a v-else v-bind:href="`/freeshow/?page=${item.label}`" class="btn">{{ item.label }}</a>
-                    </span>
-                </div>
                 <div v-if="total == 0">
                     <div class="alert alert-error">
                         <div class="flex-1">
@@ -44,29 +54,33 @@
                         </div>
                     </div>
                 </div>
-                <table v-else class="table-compact min-w-full border-collapse pt-3">
+                <table v-else class="table-compact  min-w-full border-collapse">
                     <thead class="text-center bg-gray-100 font-sans">
                         <tr class="hover:bg-grey-lighter">
                             <th></th>
                             <th>제목</th>
-                            <th>시간</th>
                             <th>작성자</th>
+                            <th>시간</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(post,i) in posts" v-bind:key=i
                             class="text-center justify-center border-b border-black-200 hover:bg-gray-100">
                             <th>{{post.id}}</th>
-                            <th><a v-bind:href="`/freeshow/${post.id}?page=${page.current_page}`">{{ post.title }} <span v-if="post.comments_count" class="text-error">[{{ post.comments_count }}]</span></a></th>
-                            <th>{{ post.updated_at }}</th>
+                            <th><a v-bind:href="`/freeshow/${post.id}?page=${page.current_page}`">{{ post.title }}
+                            <span v-if="post.comments_count"
+                                        class="text-error">[{{ post.comments_count }}] </span></a></th>
                             <th>{{ post.name }}</th>
+                            <th>{{ post.updated_at }}</th>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
+                <div class=" bottom-0 mx-auto">
+  <a class=" fixed left-1/2 transform -translate-x-2/4 bottom-0 bg-indigo-500 text-white p-2 rounded hover:bg-indigo-700 m-2 " v-bind:href="`/freewrite?page=${page.current_page}`" ><i class="fas fa-pen font-xl">글쓰기</i></a>
+</div>
         </div>
-
     </app-layout>
 </template>
 
@@ -77,7 +91,7 @@
     import BadgeYellow from '@/Geofencing/BadgeYellow'
     import LoadingBar from "@/Pages/Board/LoadingBar"
     import AppLayout from '@/Layouts/AppLayout'
-    import myAttendStatus from '@/Pages/Dashboard/MyAttendStatus'
+    import myPostInfo from '@/Pages/Board/MyPostInfo'
     import weekRunStatus from './weekRunStatus.vue'
     export default {
         data: function () {
@@ -85,7 +99,11 @@
                 header: '',
                 header2: '',
                 msg: '',
-               
+                user_name: document.head.querySelector('meta[name="user-name"]').content,
+                user_sid: document.head.querySelector('meta[name="user-sid"]').content,
+                user_class: document.head.querySelector('meta[name="user-class"]').content,
+                user_photo: document.head.querySelector('meta[name="user-photo"]').content,
+                user_id: document.head.querySelector('meta[name="user-id"]').content,
                 csrf: document.head.querySelector('meta[name="csrf-token"]').content,
                 dialogShow: false,
                 page: [],
@@ -106,7 +124,7 @@
             BadgeYellow,
             LoadingBar,
             weekRunStatus,
-            myAttendStatus
+            myPostInfo
 
         },
         mounted() {
@@ -131,8 +149,6 @@
                     this.posts = response.data.posts.data;
                     this.isLoading = 1;
                     this.pageLinks = response.data.posts.links
-                    this.pageLinks.splice(0, 1) // 이전 삭제
-                    this.pageLinks.splice(this.pageLinks.length - 1, 1) // 다음 삭제
                     this.total = response.data.posts.total
                     console.log(this.pageId);
                     console.log(this.pageLinks)
@@ -142,15 +158,53 @@
                 })
         },
         methods: {
+            refreshPage(page) {
+                if (page == "<") {
+                    if (this.pageLinks[0].url) {
+                        page = this.pageLinks[0].url.charAt(this.pageLinks[0].url.length - 1)
+                    } else {
+                        page = 1
+                    }
+                }
+                if (page == ">") {
+                    if (this.pageLinks[this.page.last_page + 1].url) {
+                        page = this.pageLinks[this.page.last_page + 1].url.charAt(this.pageLinks[this.page.last_page +
+                            1].url.length - 1)
+                    } else {
+                        page = this.page.last_page;
+                    }
+                }
+                if (this.searchQuery) {
+                    axios.get('/api/posts/search/' + this.searchQuery + '?page=' + page)
+                        .then(response => {
+                            this.page = response.data.posts;
+                            this.pageId = response.data.posts.current_page
+                            this.posts = response.data.posts.data;
+                            this.isLoading = 1;
+                            this.pageLinks = response.data.posts.links
+                            this.total = response.data.posts.total
+                        })
+                } else {
+                    axios.get("/api/posts/index?page=" + page)
+                        .then(response => {
+                            this.page = response.data.posts;
+                            this.pageId = response.data.posts.current_page
+                            this.posts = response.data.posts.data;
+                            this.isLoading = 1;
+                            this.pageLinks = response.data.posts.links
+                            this.total = response.data.posts.total
+                        })
+                }
+            },
             search() {
                 axios.get('/api/posts/search/' + this.searchQuery)
                     .then(response => {
+                        this.page = response.data.posts;
+                        this.pageId = response.data.posts.current_page
                         this.posts = response.data.posts.data;
+                        this.isLoading = 1;
                         this.pageLinks = response.data.posts.links
-                        this.pageLinks.splice(0, 1) // 이전 삭제
-                        this.pageLinks.splice(this.pageLinks.length - 1, 1) // 다음 삭제
                         this.total = response.data.posts.total
-                        console.log(this.posts)
                     })
                     .catch(response => {
                         if (!this.searchQuery) {
@@ -161,9 +215,7 @@
                                     this.posts = response.data.posts.data;
                                     this.isLoading = 1;
                                     this.pageLinks = response.data.posts.links
-                                    this.pageLinks.splice(0, 1) // 이전 삭제
-                                    this.pageLinks.splice(this.pageLinks.length - 1, 1) // 다음 삭제
-                                    this.total = response.data.posts.total;
+                                    this.total = response.data.posts.total
                                 })
                         }
                     })

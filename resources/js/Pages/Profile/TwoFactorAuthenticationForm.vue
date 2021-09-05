@@ -1,4 +1,4 @@
-<template>
+profile<template>
     <jet-action-section>
         <template #title>
             Two Factor Authentication

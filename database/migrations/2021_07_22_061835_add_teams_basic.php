@@ -43,6 +43,13 @@ class AddTeamsBasic extends Migration
         $team4->name = '교수';
         $team4->personal_team = 0;
         $team4->save();
+
+        $team5 = new Team();
+        $team5->id = 5;
+        $team5->user_id = 1;
+        $team5->name = '반대표';
+        $team5->personal_team = 0;
+        $team5->save();
     }
 
     /**

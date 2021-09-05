@@ -1,11 +1,11 @@
 <template>
-    <li class="bg-white shadow-lg p-4 rounded-lg flex justify-between w-full mb-3">
+    <li class="bg-white shadow-lg p-4 rounded-lg flex justify-between w-full mb-3 mt-4">
         <div class="flex items-center">
             <img class="w-12 h-12 rounded-full" :src="user_photo" :alt="user_name">
             <div class="ml-3">
-                <p class="text-gray-900 font-semibold tracking-wide text-sm">{{user_name}}</p>
-                <div class="flex text-sm">
-                    <p class="font-semibold mr-1">{{user_sid}}</p>
+                <p class="text-primary font-semibold tracking-wide text-sm">{{user_name}}</p>
+                <div class="flex text-xs">
+                    <p class="text-gray-700 font-semibold mr-1">{{user_sid}}</p>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
     <!-- 최근 3개의 출석 내역 뽑아옴 -->
     <li class="bg-white shadow-lg p-4 rounded-lg flex flex-wrap justify-between w-full mb-3">
         <div>
-            <p class="text-gray-900 font-semibold tracking-wide text-sm">최근 출석</p>
+            <p class="text-primary font-semibold tracking-wide text-sm">최근 출석</p>
             <div>
                 <div v-if="isLoading==0">
                     <loading-bar />

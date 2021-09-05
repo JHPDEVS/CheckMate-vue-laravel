@@ -1,16 +1,16 @@
 <template>
     <jet-action-section>
         <template #title>
-            Browser Sessions
+            브라우저 세션
         </template>
 
         <template #description>
-            Manage and log out your active sessions on other browsers and devices.
+            로그인된 기기를 관리하세요.
         </template>
 
         <template #content>
             <div class="max-w-xl text-sm text-gray-600">
-                If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
+               필요한 경우 모든 장치에서 다른 모든 브라우저 세션에서 로그아웃할 수 있습니다. 로그인 한 적이 없는 기기가 목록에 뜰 경우 카카오 계정의 비밀번호를 변경하세요.
             </div>
 
             <!-- Other Browser Sessions -->
@@ -35,8 +35,8 @@
                             <div class="text-xs text-gray-500">
                                 {{ session.ip_address }},
 
-                                <span class="text-green-500 font-semibold" v-if="session.is_current_device">This device</span>
-                                <span v-else>Last active {{ session.last_active }}</span>
+                                <span class="text-green-500 font-semibold" v-if="session.is_current_device">이 기기</span>
+                                <span v-else>최근 활동 {{ session.last_active }}</span>
                             </div>
                         </div>
                     </div>
@@ -44,23 +44,21 @@
             </div>
 
             <div class="flex items-center mt-5">
-                <jet-button @click="confirmLogout">
-                    Log Out Other Browser Sessions
-                </jet-button>
+           
 
                 <jet-action-message :on="form.recentlySuccessful" class="ml-3">
-                    Done.
+                    완료.
                 </jet-action-message>
             </div>
 
             <!-- Log Out Other Devices Confirmation Modal -->
             <jet-dialog-modal :show="confirmingLogout" @close="closeModal">
                 <template #title>
-                    Log Out Other Browser Sessions
+                    다른 세션 디바이스 로그아웃
                 </template>
 
                 <template #content>
-                    Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
+                    로그아웃을 할려면 비밀번호를 입력해주세요
 
                     <div class="mt-4">
                         <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"

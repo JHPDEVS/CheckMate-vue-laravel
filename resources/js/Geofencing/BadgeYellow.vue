@@ -3,8 +3,7 @@
     class="px-4 h-6 rounded-full text-xs font-semibold flex items-center cursor-pointer truncate"
     :class="`bg-yellow-100 text-yellow-700 hover:bg-yellow-500 hover:text-white`"
   >
-    <span class="w-2 h-2 rounded-full mr-1" :class="`bg-yellow-400`"></span>
-    <slot></slot>
+    <i class="fas fa-clock">    <slot></slot></i>
   </div>
 </template>
 <script>

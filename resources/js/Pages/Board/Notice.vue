@@ -1,9 +1,10 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                공지사항
-            </h2>
+            <div class="tabs">
+                <a class="tab  tab-lifted tab-lg tab-active font-bold" :href="route('notice')">공지사항</a>
+                <a class="tab  tab-lifted tab-lg font-bold" :href="route('free')">자유게시판</a>
+            </div>
         </template>
         <div class="md:px-32 py-4 w-full">
             <div class="shadow overflow-hidden rounded border-b border-gray-200">
@@ -21,8 +22,7 @@
                     <tbody class="text-gray-700 divide-y divide-gray-300 ">
                         <tr v-for="(post,i) in posts" v-bind:key="i">
                             <!-- 모바일  -->
-                            <th v-if="this.isMobile() && i<3"
-                                class="w-2/3 text-left  px-4 text-center text-red-500"><a
+                            <th v-if="this.isMobile() && i<3" class="w-2/3 text-left  px-4 text-center text-red-500"><a
                                     v-bind:href='post.href'>{{ post.title }}</a></th>
                             <th v-else-if="this.isMobile() && i>=3" class="w-1/3 text-left px-4 text-center "><a
                                     v-bind:href='post.href'>{{ post.title }}</a></th>
@@ -86,6 +86,9 @@
                         })
                         this.posts = posts;
                         this.ifLoading = 1;
+                    }).catch(error => {
+                        this.ifLoading = 1;
+                        alert("프록시 서버와 연결실패입니다")
                     })
             } else {
                 // 모바일이 아니면 실행될 코드 들어가는 곳
@@ -106,11 +109,14 @@
                                 href: href
                             }
                             posts.push(value);
-                           
+
                         })
                         posts.shift();
                         this.posts = posts;
                         this.ifLoading = 1;
+                    }).catch(error => {
+                        this.ifLoading = 1;
+                        alert("프록시 서버와 연결실패입니다")
                     })
             }
 
